@@ -12,7 +12,7 @@
     "start": "wrangler dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --port 8788",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
-    "deploy": "pnpm run build && wrangler deploy --config dist/server/wrangler.json",
+    "deploy": "npm run build && node scripts/check-deploy-config.mjs && npm run db:migrate:remote && wrangler deploy --config dist/server/wrangler.json",
     "db:migrate:local": "wrangler d1 migrations apply DB --local --config wrangler.jsonc --persist-to .wrangler/state",
     "db:migrate:remote": "wrangler d1 migrations apply DB --remote --config wrangler.jsonc",
     "test:auth": "node --test tests/admin-auth.test.mjs",
@@ -75,5 +75,21 @@
       "sharp": "0.35.4"
     }
   },
-  "packageManager": "pnpm@11.25.0"
+  "packageManager": "pnpm@11.25.0",
+  "cloudflare": {
+    "bindings": {
+      "DB": {
+        "description": "Photo metadata and administrator sessions. Cloudflare creates a D1 database for your copy."
+      },
+      "BUCKET": {
+        "description": "Stores your uploaded photos. Keep public bucket access disabled."
+      },
+      "ADMIN_PASSWORD": {
+        "description": "Choose a strong password for your /manage dashboard. Replace the example value."
+      },
+      "SESSION_SECRET": {
+        "description": "Enter a unique random secret of at least 32 characters to sign administrator sessions. Replace the example value."
+      }
+    }
+  }
 }

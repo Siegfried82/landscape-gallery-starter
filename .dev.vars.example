@@ -1,3 +1,4 @@
-# Copy to ignored .dev.vars for local development only.
+# Deployment button: replace both example values when prompted.
+# Local development: copy to ignored .dev.vars and replace the values.
 ADMIN_PASSWORD="replace-with-your-own-password"
 SESSION_SECRET="replace-with-a-random-secret-at-least-32-characters"

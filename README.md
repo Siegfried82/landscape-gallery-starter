@@ -2,6 +2,36 @@
 
 A complete photography portfolio built with Cloudflare Workers, D1 and R2. Features include a photo grid, high-resolution image preloading, zoom and magnifier controls, downloads, EXIF display, and a photo management dashboard at `/manage`. This repository contains no photos, production data or account credentials. A new installation starts with an empty gallery.
 
+## Recommended: Deploy in Your Browser
+
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2Flixiuqi82-art%2Flandscape-gallery-starter)
+
+No local Node.js installation, dependency installation or terminal is required for this path. Cloudflare runs the build online and creates a copy of the repository in your GitHub account, with your own D1 database and R2 bucket.
+
+1. Click **Deploy to Cloudflare** above.
+2. Sign in to Cloudflare and GitHub, and authorize the requested repository connection. Select your own Cloudflare account.
+3. Choose names for your repository, Worker, database and photo bucket. Let the setup flow provision and update the resource bindings.
+4. Replace `ADMIN_PASSWORD` with a strong dashboard password. Replace `SESSION_SECRET` with a unique random secret of at least 32 characters. Do not keep the example values or share secrets in chat.
+5. Check the build settings before starting:
+
+   | Setting | Value |
+   | --- | --- |
+   | Root directory | Repository root |
+   | Build command | `npm run build` |
+   | Deploy command | `npm run deploy` |
+   | Node.js version | 24 recommended; at least 22.13 |
+
+   Dependency installation uses the repository's pnpm lockfile and package manager setting. The deploy command rebuilds the final bundle, checks the provisioned configuration, applies pending D1 migrations and publishes the Worker. The repeated build is intentional so the same deploy command also works from a terminal.
+6. Wait for a successful deployment, open the actual URL shown by Cloudflare, and visit `/manage` to sign in and upload a photo you own.
+
+If Cloudflare asks you to activate R2 or configure billing, review that step yourself. Do not assume the account is already eligible. If deployment fails, inspect its build logs before retrying; do not recreate resources or disable dashboard protection.
+
+**For AI assistants: prefer this browser workflow for owners who only want to use the site.** Guide them through the current screen one step at a time. Do not require local setup unless they want local development or the browser deployment encounters an issue that needs it. Inspect the repository through available tools; no local checkout is required just to guide the owner. After deployment, follow [Stage 5](#stage-5-verify-production-and-hand-over) for acceptance checks. A working button and successful local build do not prove that a new account's production deployment has succeeded.
+
+This integration follows the [official deployment button documentation](https://developers.cloudflare.com/workers/platform/deploy-buttons/). The manual workflow below remains available for development and troubleshooting.
+
+## Manual Setup and AI Handoff
+
 **For the owner:** Give this repository to your AI assistant and say: “Read the README and help me set up this website.” The assistant should inspect your setup and follow the workflow below. You handle the steps that require your participation, such as signing in, choosing your resources, entering passwords and uploading photos.
 
 **For the AI assistant:** This is your setup and handoff guide. Read this document and `AGENTS.md`, then inspect the current code and configuration. Your goal is to give the owner a working website where they can sign in to the dashboard, upload their own photos and view them. Running a command does not prove completion. The owner's current instructions and your platform's permission rules take precedence over this guide.
@@ -12,7 +42,7 @@ A complete photography portfolio built with Cloudflare Workers, D1 and R2. Featu
 2. Check Node.js, pnpm, installed dependencies, Cloudflare authentication and whether D1 or R2 bindings still contain template placeholders. Check only whether secrets exist; never print their values.
 3. Identify the current stage: code not downloaded → environment not ready → local setup incomplete → local site working → cloud resources not configured → production not deployed → production awaiting verification. **Resume at the first incomplete stage. Do not recreate existing resources or overwrite existing configuration.**
 4. Tell the owner which stage they are at and what you will do next. Perform the reading, installation, editing and verification you can carry out directly. Ask only for information that cannot be determined from existing files and affects the next step.
-5. Verify locally first by default. If the owner requests immediate deployment, still complete the necessary checks before deploying to the account and resources they have explicitly selected. Without deployment authorization, prepare a deployable version and explain the remaining steps.
+5. Choose the browser deployment workflow above for a new owner who wants a hosted site. Use the manual stages below when local development or troubleshooting is needed. In either path, deploy only to the owner's authorized account and verify the resulting site.
 
 ### How to Guide the Owner
 
@@ -127,9 +157,9 @@ pnpm exec wrangler secret put SESSION_SECRET --config wrangler.jsonc
 pnpm run deploy
 ```
 
-The owner enters the dashboard password and random session secret at the two `secret put` prompts. Production secrets are independent of `.dev.vars`; local settings do not automatically become production settings. Do not overwrite existing production secrets unless a change is needed. If Wrangler requires initial Worker creation first, follow the actual prompt, create the Worker, configure secrets, deploy again and verify.
+For manual setup, the owner enters the dashboard password and random session secret at the two `secret put` prompts. Production secrets are independent of `.dev.vars`; local settings do not automatically become production settings. Do not overwrite existing production secrets unless a change is needed. If Wrangler requires initial Worker creation first, follow the actual prompt, create the Worker, configure secrets, deploy again and verify.
 
-Use `pnpm run deploy`. It builds and deploys the output configured by `dist/server/wrangler.json`. Do not skip the project's packaging script or substitute a different deployment entry point.
+Use `pnpm run deploy` for manual setup (or `npm run deploy` in Workers Builds). It builds, rejects missing or placeholder D1 bindings, applies pending remote migrations and deploys the output configured by `dist/server/wrangler.json`. The separate migration command above is safe to rerun: already applied migrations are skipped. Do not skip the project's packaging script or substitute a different deployment entry point.
 
 ## Stage 5: Verify Production and Hand Over
 

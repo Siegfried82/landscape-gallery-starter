@@ -8,7 +8,8 @@
   "d1_databases": [{
     "binding": "DB",
     "database_name": "gallery-db",
-    // Replace this placeholder with the ID returned by `wrangler d1 create gallery-db`.
+    // The deployment button replaces this placeholder automatically.
+    // For manual deployment, use the ID returned by `wrangler d1 create gallery-db`.
     "database_id": "00000000-0000-0000-0000-000000000000",
     "migrations_dir": "./drizzle"
   }],
