@@ -6,6 +6,7 @@ import {parameterFields,visibleTitle,type Photo} from '@/lib/photo-metadata';
 import {useLanguage} from '@/addons/hooks/useLanguage';
 import {formatBilingualText} from '@/addons/locales/metadata-helpers';
 import {bindViewerWheel,zoomAt} from '@/lib/viewer-zoom';
+import {isLoupeImageReady} from '@/lib/loupe-image';
 import {preloadOriginals,originalViewUrl} from '@/lib/preload-originals';
 type Point={x:number;y:number};
 const MAX_ZOOM=10;
@@ -62,9 +63,9 @@ function PixelLoupe({imageSrc}:{imageSrc:string}){
     const hide=()=>{point=null;if(lens.current)lens.current.style.display='none';};
     function draw(){
       frame=0;
-      const image=toggle.current?.closest('[role="dialog"]')?.querySelector<HTMLImageElement>('.viewer-stage img');
+      const image=toggle.current?.closest('[role="dialog"]')?.querySelector<HTMLImageElement>('.viewer-stage img.viewer-original');
       const surface=canvas.current,glass=lens.current;
-      if(!point||!image||!image.complete||!image.naturalWidth||!surface||!glass||new URL(image.src).pathname!==imageSrc){hide();return;}
+      if(!point||!image||!surface||!glass||!isLoupeImageReady(image,imageSrc,document.baseURI)){hide();return;}
       const rect=image.getBoundingClientRect();
       if(!rect.width||!rect.height||point.x<rect.left||point.x>rect.right||point.y<rect.top||point.y>rect.bottom){hide();return;}
       const context=surface.getContext('2d');if(!context){hide();return;}
@@ -133,7 +134,7 @@ export default function PhotoLightbox({photos,index,onNavigate,onClose,opener}:{
   function rebase(){const values=[...points.current.values()];if(!values.length){gesture.current=null;return;}const center=values.length>1?{x:(values[0].x+values[1].x)/2,y:(values[0].y+values[1].y)/2}:values[0];gesture.current={center,distance:values.length>1?Math.hypot(values[0].x-values[1].x,values[0].y-values[1].y):0,pose:current.current};}
   return <Dialog open onOpenChange={open=>{if(!open)onClose();}}><DialogContent className="photo-lightbox" overlayClassName="photo-lightbox-backdrop" style={{isolation:'isolate'}} showCloseButton={false} onCloseAutoFocus={e=>{e.preventDefault();opener?.focus();}}>
     <AmbientBackdrop src={'/api/image/'+photo.id}/>
-    <div className="viewer-toolbar"><span aria-live="polite">{index+1} / {photos.length}</span><div className="zoom-controls" style={{flexWrap:'wrap',justifyContent:'center'}}><a className="button viewer-download" href={originalViewUrl(photo.id)+'&download=1'} download title={t('下载不含 EXIF 和 GPS 的图片','Download image without EXIF or GPS')}>{t('下载','Download')}</a><PixelLoupe imageSrc={originalViewUrl(photo.id)}/><button onClick={()=>zoom(-.5)} disabled={pose.scale===1} aria-label={t('缩小','Zoom out')}>−</button><button onClick={()=>apply({scale:1,x:0,y:0})} aria-label={t('重置缩放','Reset zoom')}>{Math.round(pose.scale*100)}%</button><button onClick={()=>zoom(.5)} disabled={pose.scale>=MAX_ZOOM} aria-label={t('放大','Zoom in')}>＋</button></div><DialogClose asChild><button aria-label={t('关闭预览','Close preview')}>{t('关闭','Close')} ×</button></DialogClose></div>
+    <div className="viewer-toolbar"><span aria-live="polite">{index+1} / {photos.length}</span><div className="zoom-controls" style={{flexWrap:'wrap',justifyContent:'center'}}><a className="button viewer-download" href={originalViewUrl(photo.id)+'&download=1'} download title={t('下载不含 EXIF 和 GPS 的图片','Download image without EXIF or GPS')}>{t('下载','Download')}</a><PixelLoupe imageSrc={originalViewUrl(photo.id,retryKey)}/><button onClick={()=>zoom(-.5)} disabled={pose.scale===1} aria-label={t('缩小','Zoom out')}>−</button><button onClick={()=>apply({scale:1,x:0,y:0})} aria-label={t('重置缩放','Reset zoom')}>{Math.round(pose.scale*100)}%</button><button onClick={()=>zoom(.5)} disabled={pose.scale>=MAX_ZOOM} aria-label={t('放大','Zoom in')}>＋</button></div><DialogClose asChild><button aria-label={t('关闭预览','Close preview')}>{t('关闭','Close')} ×</button></DialogClose></div>
     <div className="viewer-stage" ref={attachStage} style={{cursor:pose.scale>1?'grab':'default'}} onDoubleClick={e=>apply(zoomAt(current.current,current.current.scale===1?2:1,localPoint({x:e.clientX,y:e.clientY})))}
       onPointerDown={e=>{if(e.button!==0)return;e.currentTarget.setPointerCapture(e.pointerId);const p={x:e.clientX,y:e.clientY};if(points.current.size===0){start.current=p;pinched.current=false;}points.current.set(e.pointerId,p);if(points.current.size>1)pinched.current=true;rebase();}}
       onPointerMove={e=>{if(!points.current.has(e.pointerId))return;points.current.set(e.pointerId,{x:e.clientX,y:e.clientY});const values=[...points.current.values()],g=gesture.current;if(!g)return;if(values.length>1&&g.distance){const center={x:(values[0].x+values[1].x)/2,y:(values[0].y+values[1].y)/2};const scale=clamp(g.pose.scale*Math.hypot(values[0].x-values[1].x,values[0].y-values[1].y)/g.distance);const next=zoomAt(g.pose,scale,localPoint(g.center));apply({...next,x:next.x+center.x-g.center.x,y:next.y+center.y-g.center.y});}else if(g.pose.scale>1)apply({...g.pose,x:g.pose.x+e.clientX-g.center.x,y:g.pose.y+e.clientY-g.center.y});}}
