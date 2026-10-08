@@ -19,3 +19,11 @@ test('missing or failed source never returns private original bytes',async()=>{
  let writes=0;await assert.rejects(prepare({head:async()=>({etag:'a'}),get:async()=>null,put:async()=>{writes++;}},'photo','image/jpeg'));
  assert.equal(writes,0);
 });
+test('HEAD prepares the same public original but cancels the download body',async()=>{
+ let canceled=false;const route={};
+ const code=ts.transpileModule(readFileSync('app/api/view/[id]/route.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
+ const db={prepare:()=>({bind:()=>({first:async()=>({mime:'image/jpeg'})})})};
+ vm.runInNewContext(code,{exports:route,Response,URL,String,console,require:id=>id.includes('public-original')?{publicOriginal:async()=>({size:123,body:new ReadableStream({cancel(){canceled=true;}})})}:{storage:()=>({db,bucket:{}})}});
+ const response=await route.HEAD(new Request('https://gallery.test/api/view/photo',{method:'HEAD'}),{params:Promise.resolve({id:'photo'})});
+ assert.equal(response.status,200);assert.equal(response.body,null);assert.equal(response.headers.get('Content-Length'),'123');assert.equal(canceled,true);
+});
