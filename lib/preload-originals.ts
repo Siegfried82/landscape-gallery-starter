@@ -1,5 +1,5 @@
 /** Warm the browser's HTTP cache without decoding or retaining every original. */
-export function originalViewUrl(id:string,retry=0){return `/api/view/${encodeURIComponent(id)}?v=2${retry?`&retry=${retry}`:''}`;}
+export function originalViewUrl(id:string,retry=0){return `/api/view/${encodeURIComponent(id)}?v=3${retry?`&retry=${retry}`:''}`;}
 export async function preloadOriginals(ids:string[],completed:Set<string>,signal:AbortSignal){
  const queue=[...new Set(ids)].filter(id=>!completed.has(id));let cursor=0;
  async function worker(){
