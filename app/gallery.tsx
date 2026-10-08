@@ -54,6 +54,14 @@ export default function Gallery({manage}:{manage:boolean}){
   const [opener,setOpener]=useState<HTMLElement|null>(null),[editing,setEditing]=useState<Photo|null>(null);
   const selection=useRef(0);
   const preloadedOriginals=useRef(new Set<string>());
+  const originalIntentTimer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined);
+  useEffect(()=>()=>{clearTimeout(originalIntentTimer.current);},[]);
+  function warmIntendedOriginal(target:EventTarget|null){
+    clearTimeout(originalIntentTimer.current);
+    if(manage||active||!(target instanceof Element))return;
+    const id=target.closest<HTMLElement>('[data-gallery-photo]')?.dataset.galleryPhoto;
+    if(id)originalIntentTimer.current=setTimeout(()=>{preload(originalViewUrl(id),{as:'image',fetchPriority:'high'});},200);
+  }
   const [heroReady,setHeroReady]=useState(false);
   const [files,setFiles]=useState<File[]>([]),[uploadProgress,setUploadProgress]=useState(''),[batchSelection,setBatchSelection]=useState(false);
   const visible=photos.filter(p=>(location==='all'||p.location===location.slice(9)));
@@ -117,7 +125,7 @@ export default function Gallery({manage}:{manage:boolean}){
    try{const r=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids})});if(!r.ok)throw Error('排序保存失败，请刷新后重试。');await load(false);setNotice('照片顺序已保存。');}catch(e){setError((e as Error).message);}finally{setBusy(false);}
   }
   async function remove(p:Photo){if(!confirm('删除《'+p.title+'》？此操作无法撤销。'))return;setBusy(true);setError('');try{const r=await fetch('/api/photos/'+p.id,{method:'DELETE'});if(!r.ok)throw Error('删除失败，请重试。');await load();setEditing(null);setNotice('照片已删除。');}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
-  return <><GalleryHeader manage={manage} dark={dark} onToggleTheme={theme}/><main className={viewMode==='grid'?'gallery-seamless':undefined}>{manage&&<GalleryIntro manage/>}
+  return <><GalleryHeader manage={manage} dark={dark} onToggleTheme={theme}/><main onPointerOver={e=>warmIntendedOriginal(e.target)} onFocusCapture={e=>warmIntendedOriginal(e.target)} onPointerLeave={()=>clearTimeout(originalIntentTimer.current)} className={viewMode==='grid'?'gallery-seamless':undefined}>{manage&&<GalleryIntro manage/>}
 
   {manage&&<form className="upload" onSubmit={upload}><div><h2>上传作品</h2><p>JPG、PNG 或 WebP，可一次选择多张照片</p></div><label>选择照片<input type="file" name="file" accept="image/jpeg,image/png,image/webp" multiple required disabled={busy} onChange={choose}/></label><label>作品标题<input name="title" placeholder={files.length>1?"留空不显示；填写则作为标题前缀":"留空不显示名称"} maxLength={100} disabled={busy}/></label><label>拍摄地点<input name="location" placeholder="例如：坦桑尼亚" maxLength={100} disabled={busy}/></label><MetadataFields busy={busy||reading}/>{files.length>1&&<p className="parameter-notice">地点应用于本批照片；EXIF 分别从每张原图读取，下方 EXIF 输入仅用于单张上传。</p>}{(reading||parameterNotice)&&<p className="parameter-notice" role="status">{reading?'正在读取拍摄参数…':parameterNotice}</p>}<button disabled={busy||reading}>{busy?'正在处理…':files.length>1?'上传 '+files.length+' 张照片':'上传照片'}</button></form>}
   {uploadProgress&&<p className="message" role="status">{uploadProgress}</p>}

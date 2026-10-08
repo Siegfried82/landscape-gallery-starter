@@ -114,3 +114,6 @@
 @media(prefers-reduced-motion:reduce){::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}.viewer-stage img,.addon-stage-overlay,.addon-justified-overlay,.addon-card-overlay{transition:none!important}.addon-justified-card[data-drop-target=true]{transform:none}}
 
 .photo-lightbox .viewer-toolbar .viewer-download{display:inline-flex;align-items:center;min-height:30px;padding:4px 9px;font-size:12px;white-space:nowrap}
+
+/* Keep the original's loading state visible and its retry control usable. */
+.photo-lightbox .viewer-stage>.original-loading{display:flex;align-items:center;gap:10px;white-space:normal;pointer-events:auto!important}
