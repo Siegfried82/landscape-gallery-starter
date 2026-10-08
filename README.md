@@ -1,40 +1,40 @@
-# 山川之间 · 可自行部署的摄影网站
+# Landscape Gallery — Self-Hosted Photography Website
 
-这是一套完整的摄影作品集代码，使用 Cloudflare Workers + D1 + R2。提供照片网格、高清大图预加载、缩放与放大镜、下载、EXIF 展示、照片管理后台 `/manage`。仓库不包含照片、线上数据或账号凭据；首次搭建的相册为空。
+A complete photography portfolio built with Cloudflare Workers, D1 and R2. Features include a photo grid, high-resolution image preloading, zoom and magnifier controls, downloads, EXIF display, and a photo management dashboard at `/manage`. This repository contains no photos, production data or account credentials. A new installation starts with an empty gallery.
 
-**给使用者：** 把本仓库交给你的 AI 助手，告诉它“阅读 README，带我搭建这个网站”，它应当按下面的流程检查并执行。你只需处理账号登录、选择自己的资源、设置密码和上传照片等需要本人完成的步骤。
+**For the owner:** Give this repository to your AI assistant and say: “Read the README and help me set up this website.” The assistant should inspect your setup and follow the workflow below. You handle the steps that require your participation, such as signing in, choosing your resources, entering passwords and uploading photos.
 
-**给接手 AI：** 本文是搭建与交接操作指南。先读本文及 `AGENTS.md`，再读取当前代码与配置。你的目标是让主人获得一个可以访问、可以登录后台、可以上传和查看自己照片的网站；不能把“命令已经运行”当作任务完成。用户当前指令和平台权限规则优先于本文。
+**For the AI assistant:** This is your setup and handoff guide. Read this document and `AGENTS.md`, then inspect the current code and configuration. Your goal is to give the owner a working website where they can sign in to the dashboard, upload their own photos and view them. Running a command does not prove completion. The owner's current instructions and your platform's permission rules take precedence over this guide.
 
-## AI 首先做什么
+## What the AI Should Do First
 
-1. 确认当前目录是本项目，读取 `package.json`、`wrangler.jsonc`、`.dev.vars.example`、`AGENTS.md`，检查工作区是否有主人尚未提交的修改。
-2. 检查 Node.js、pnpm、依赖安装状态、Cloudflare 登录状态，以及 D1 / R2 绑定是否仍为模板占位值。只检查密钥是否存在，不输出密钥内容。
-3. 判断当前阶段：尚未下载代码 → 环境未准备 → 本地未初始化 → 本地可用 → 云资源未配置 → 线上未部署 → 线上待验收。**从第一个未完成阶段继续，不重复创建已有资源或覆盖已有配置。**
-4. 告诉主人现在处于哪一步、你接下来会完成什么。能直接读取、安装、修改和验证的工作由你完成；只询问无法从现有文件判断、且会影响下一步的信息。
-5. 默认先完成本地验证。主人要求直接上线时，也须完成必要检查，再部署到主人明确选择的账号和资源。未得到部署授权时，准备好可部署的版本并说明剩余步骤。
+1. Confirm that you are in this project directory. Read `package.json`, `wrangler.jsonc`, `.dev.vars.example` and `AGENTS.md`. Check for the owner's uncommitted changes.
+2. Check Node.js, pnpm, installed dependencies, Cloudflare authentication and whether D1 or R2 bindings still contain template placeholders. Check only whether secrets exist; never print their values.
+3. Identify the current stage: code not downloaded → environment not ready → local setup incomplete → local site working → cloud resources not configured → production not deployed → production awaiting verification. **Resume at the first incomplete stage. Do not recreate existing resources or overwrite existing configuration.**
+4. Tell the owner which stage they are at and what you will do next. Perform the reading, installation, editing and verification you can carry out directly. Ask only for information that cannot be determined from existing files and affects the next step.
+5. Verify locally first by default. If the owner requests immediate deployment, still complete the necessary checks before deploying to the account and resources they have explicitly selected. Without deployment authorization, prepare a deployable version and explain the remaining steps.
 
-### 如何指导主人
+### How to Guide the Owner
 
-每次需要主人操作，只给出当前必需的一步：**为什么需要 → 打开什么页面或终端 → 点击/输入什么 → 完成后会看到什么 → 如何回来继续。** 不一次抛出整套教程让主人自行排错。
+Whenever the owner must act, provide only the next necessary step: **why it is needed → which page or terminal to open → what to click or enter → what success looks like → how to return and continue.** Do not hand over an entire troubleshooting manual at once.
 
-- 登录：说明“请在打开的 Cloudflare 页面登录并授权 Wrangler；完成后告诉我，我会检查登录结果”。不要索取账号密码或验证码。
-- 账号/资源选择：展示实际查到的名称，说明将使用哪一组。遇到多个账号，先让主人选；不要猜测或借用模板作者的资源。
-- 密钥：指导主人在本地文件或 Wrangler 提示中输入。不要让主人把密码或密钥发到聊天里，不将其写入 README 或 Git 提交。
-- 阻塞：报告真实错误和具体解决动作；不能只说“环境有问题”。保留已完成的配置，修复后从当前阶段继续。
+- **Sign-in:** Say, “Please sign in on the Cloudflare page that opens and authorize Wrangler. Tell me when you finish, and I will check the result.” Do not ask for account passwords or verification codes.
+- **Account and resource selection:** Show the actual names you found and explain which resources will be used. If multiple accounts are available, let the owner choose. Do not guess or reuse the template author's resources.
+- **Secrets:** Guide the owner to enter secrets into a local file or Wrangler's prompt. Do not ask them to paste passwords or secrets into chat, and never include secrets in the README or Git commits.
+- **Blockers:** Report the actual error and the specific action needed to resolve it. Do not merely say “there is an environment issue.” Preserve completed configuration and resume from the current stage after fixing the problem.
 
-## 阶段 1：获取代码与准备环境
+## Stage 1: Get the Code and Prepare the Environment
 
-需要 Node.js >= 22.13（推荐 24）、pnpm 11.25.0，以及自己的 Cloudflare 账号。Cloudflare 上线还需要启用 Workers、D1 和 R2。
+Requirements: Node.js >= 22.13 (24 recommended), pnpm 11.25.0 and the owner's own Cloudflare account. Production deployment also requires Workers, D1 and R2 to be enabled.
 
-尚未下载时执行：
+If the code has not been downloaded:
 
 ```sh
 git clone https://github.com/lixiuqi82-art/landscape-gallery-starter.git
 cd landscape-gallery-starter
 ```
 
-想保存自己的修改，应先在 GitHub Fork 本仓库，再克隆自己的 Fork；已经下载则直接使用已有目录。
+To maintain personal changes on GitHub, fork this repository first and clone that fork. If the code is already downloaded, use the existing directory.
 
 ```sh
 node --version
@@ -42,37 +42,37 @@ pnpm --version
 pnpm install --frozen-lockfile
 ```
 
-**验收：** 环境满足版本要求，依赖安装成功。遇到锁文件错误，先查明原因，不能通过删除锁文件或随意升级依赖绕过。
+**Acceptance check:** Required versions are available and dependencies install successfully. Investigate lockfile errors rather than deleting the lockfile or arbitrarily upgrading dependencies.
 
-## 阶段 2：本地运行
+## Stage 2: Run Locally
 
-如果 `.dev.vars` 不存在，复制 `.dev.vars.example` 创建它；存在则保留主人的配置。设置：
+If `.dev.vars` does not exist, create it by copying `.dev.vars.example`. If it exists, preserve the owner's configuration. Set:
 
-| 配置项 | 用途 | 要求 |
+| Variable | Purpose | Requirement |
 | --- | --- | --- |
-| `ADMIN_PASSWORD` | 管理后台密码 | 主人设置强密码，不能保留示例值 |
-| `SESSION_SECRET` | 签名管理会话 | 至少 32 字符的随机密钥，不能保留示例值 |
+| `ADMIN_PASSWORD` | Dashboard password | A strong password chosen by the owner; replace the example value |
+| `SESSION_SECRET` | Signs administrator sessions | A random secret of at least 32 characters; replace the example value |
 
-可在本地生成随机密钥：
+Generate a random secret locally with:
 
 ```sh
 node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 ```
 
-AI 自动生成时，应直接写入被 Git 忽略的本地文件，不把生成结果输出到聊天或日志。
+If the AI generates a secret automatically, write it directly to a Git-ignored local file without exposing it in chat or logs.
 
 ```sh
 pnpm run db:migrate:local
 pnpm run dev
 ```
 
-打开终端给出的地址，默认 `http://localhost:5174`；后台为 `/manage`。本地数据库和图片保存在 `.wrangler/state`，不会自动复制到线上。
+Open the URL printed in the terminal, normally `http://localhost:5174`. The dashboard is at `/manage`. Local database and image data are stored in `.wrangler/state` and are not automatically copied to production.
 
-**验收：** 首页可打开，`/api/photos` 返回正常 JSON（初始 `photos` 是空数组），后台能用配置的密码登录。请主人上传一张自己的测试照片，检查网格、大图和缩放。空相册不是报错。
+**Acceptance check:** The homepage opens, `/api/photos` returns valid JSON (initially with an empty `photos` array), and the dashboard accepts the configured password. Ask the owner to upload one test photo they own, then check the grid, full-size image and zoom. An empty gallery is not an error.
 
-## 阶段 3：配置主人自己的 Cloudflare 资源
+## Stage 3: Configure the Owner's Cloudflare Resources
 
-先检查现有登录和资源：
+Check existing authentication and resources first:
 
 ```sh
 pnpm exec wrangler whoami
@@ -80,36 +80,36 @@ pnpm exec wrangler d1 list
 pnpm exec wrangler r2 bucket list
 ```
 
-尚未登录时：
+If not signed in:
 
 ```sh
 pnpm exec wrangler login
 ```
 
-没有适合的资源、且主人授权创建时：
+If suitable resources do not exist and the owner authorizes creating them:
 
 ```sh
 pnpm exec wrangler d1 create gallery-db
 pnpm exec wrangler r2 bucket create gallery-photos
 ```
 
-名称冲突时使用主人认可的新名称，并同步修改配置。已有数据库或存储桶可能包含数据，不能删除重建。
+If a name is already taken, choose a new name approved by the owner and update the configuration accordingly. Existing databases and buckets may contain data; do not delete and recreate them.
 
-编辑 `wrangler.jsonc`：
+Edit `wrangler.jsonc`:
 
-| 字段 | AI 要做的事 |
+| Field | Required Action |
 | --- | --- |
-| `name` | 设置主人自己的网站 Worker 名称 |
-| `database_name` | 与选定的 D1 数据库名称一致 |
-| `database_id` | 填入实际 D1 ID；全零值仅用于本地占位，不能上线 |
-| `bucket_name` | 与选定的 R2 存储桶名称一致 |
-| 绑定 `DB` / `BUCKET` / `ASSETS` | 保留名称，代码依赖这些绑定 |
+| `name` | Set the owner's Worker name |
+| `database_name` | Match the selected D1 database name |
+| `database_id` | Enter the actual D1 ID; the all-zero value is a local placeholder and must not be deployed |
+| `bucket_name` | Match the selected R2 bucket name |
+| Bindings `DB` / `BUCKET` / `ASSETS` | Keep these names; the code depends on them |
 
-**验收：** 登录账号正确，D1 ID 已替换，资源归属与名称核对一致。R2 不需要开启公开桶访问。Cloudflare 可用额度和计费以主人账号及官方说明为准；遇到付费或启用服务页面，由主人决定和完成。
+**Acceptance check:** Confirm the signed-in account, replace the placeholder D1 ID, and verify resource ownership and names. R2 does not need public bucket access. Cloudflare quotas and charges depend on the owner's account and official terms. If payment or service activation is required, let the owner decide and complete that step.
 
-## 阶段 4：迁移、密钥与部署
+## Stage 4: Apply Migrations, Configure Secrets and Deploy
 
-先运行项目检查：
+Run the project checks first:
 
 ```sh
 pnpm run typecheck
@@ -118,7 +118,7 @@ pnpm run test
 pnpm run build
 ```
 
-失败则读取报错并修复，不应宣称可部署。成功后，在已授权的资源上执行：
+Read and fix any errors; do not claim deployment readiness if checks fail. After they pass, run the following against authorized resources:
 
 ```sh
 pnpm run db:migrate:remote
@@ -127,66 +127,62 @@ pnpm exec wrangler secret put SESSION_SECRET --config wrangler.jsonc
 pnpm run deploy
 ```
 
-两次 `secret put` 分别由主人输入后台密码和随机会话密钥。线上密钥与 `.dev.vars` 独立；本地设置不会自动成为线上设置。已有线上密钥且无需更换时，不重复覆盖。若 Wrangler 提示需要先创建 Worker，按实际提示完成首次 Worker 创建，再配置密钥、重新部署并验收。
+The owner enters the dashboard password and random session secret at the two `secret put` prompts. Production secrets are independent of `.dev.vars`; local settings do not automatically become production settings. Do not overwrite existing production secrets unless a change is needed. If Wrangler requires initial Worker creation first, follow the actual prompt, create the Worker, configure secrets, deploy again and verify.
 
-使用 `pnpm run deploy`，它会构建并发布 `dist/server/wrangler.json` 指向的产物；不要跳过项目打包脚本，擅自改成另一套发布入口。
+Use `pnpm run deploy`. It builds and deploys the output configured by `dist/server/wrangler.json`. Do not skip the project's packaging script or substitute a different deployment entry point.
 
-## 阶段 5：线上验收与交付
+## Stage 5: Verify Production and Hand Over
 
-从**实际部署输出**取得网址，不能猜测 `workers.dev` 域名。逐项验证：
+Obtain the URL from the **actual deployment output**. Do not guess a `workers.dev` hostname. Verify each item:
 
-- 首页和 `/api/photos` 正常响应；没有照片时展示空相册。
-- `/manage` 可打开，主人能登录；匿名访问受保护的管理接口不能获得原始文件或写入权限。
-- 主人上传一张自己的照片后，首页能显示，高清大图完整加载，缩放与下载正常。
-- 后台登出后，管理会话失效。
+- The homepage and `/api/photos` respond normally; an installation without photos displays an empty gallery.
+- `/manage` opens and the owner can sign in. Anonymous requests to protected administrator endpoints cannot retrieve private originals or perform writes.
+- After the owner uploads a photo they own, it appears on the homepage, its high-resolution image loads completely, and zoom and download work.
+- Signing out invalidates the administrator session.
 
-不能为了验收自动公开主人的私人照片；测试照片由主人选择。没有条件完成浏览器或照片验收时，明确列出尚未验证的项目，不能写“全部完成”。
+Do not publish the owner's private photos automatically for verification; the owner selects the test photo. If browser or photo verification cannot be completed, list the unverified items explicitly rather than saying everything is complete.
 
-交付时告诉主人：**网站网址、后台网址、已验证项目、未完成项目、下一步动作**。若代码也已上传 GitHub，单独说明仓库同步状态；GitHub 更新不等于网站已经部署。
+At handoff, provide the **website URL, dashboard URL, verified items, incomplete items and next action**. If code has also been uploaded to GitHub, report repository synchronization separately. Updating GitHub does not mean the website has been deployed.
 
-## 常见问题：AI 应如何处理
+## Troubleshooting: What the AI Should Do
 
-| 现象 | 先检查 | 下一步 |
+| Symptom | Check First | Next Action |
 | --- | --- | --- |
-| 首页没有照片 | `/api/photos` 是否正常、数据库是否为空 | 引导主人从 `/manage` 上传，勿复制作者照片 |
-| 后台无法登录 | 密钥是否配置、是否仍为示例值、实际响应 | 修复配置；登录限流时等待窗口，不关闭保护 |
-| D1 表不存在 | 当前账号、绑定、该环境迁移是否应用 | 在正确环境应用现有迁移，不删除数据库 |
-| R2 上传失败 | 桶名称、绑定、服务是否启用、实际错误 | 修复资源配置后重试，不公开存储桶绕过 |
-| 大图慢或不完整 | 图片响应状态、实际传输是否完整、预加载逻辑 | 保留高清预加载，定位传输/缓存/解码原因 |
-| 部署失败 | 构建、占位 ID、账号权限、真实 Wrangler 日志 | 修复具体错误后重试，不随意升级全套依赖 |
-| 自定义域名 | 主人域名及 Cloudflare DNS 状态 | 默认先交付 workers.dev 地址，再按请求配置域名 |
+| No photos on the homepage | Whether `/api/photos` works and the database is empty | Guide the owner to upload through `/manage`; do not copy the author's photos |
+| Dashboard sign-in fails | Missing or example secrets and the actual response | Fix configuration; wait for the rate-limit window when applicable instead of disabling protection |
+| D1 tables are missing | Account, binding and migrations in the affected environment | Apply existing migrations in the correct environment; do not delete the database |
+| R2 upload fails | Bucket name, binding, service activation and actual error | Fix resource configuration and retry; do not enable public bucket access as a workaround |
+| Large images are slow or incomplete | Image response status, transfer completeness and preloading logic | Preserve high-resolution preloading and investigate transfer, caching or decoding |
+| Deployment fails | Build output, placeholder IDs, account permissions and actual Wrangler logs | Fix the specific error and retry; do not arbitrarily upgrade the entire dependency set |
+| A custom domain is requested | The owner's domain and Cloudflare DNS status | Deliver the working workers.dev URL first, then configure the domain as requested |
 
-## 修改外观与代码定位
+## Customization and Code Map
 
-| 目标 | 文件 |
+| Goal | File |
 | --- | --- |
-| 页面标题与描述 | `app/layout.tsx` |
-| 首页页头 | `addons/components/GalleryHeader.tsx` |
-| 网格与相册交互 | `app/gallery.tsx` |
-| 大图查看器 | `app/photo-lightbox.tsx` |
-| 页面样式 | `app/globals.css` |
-| 管理界面 | `app/manage/` |
-| 数据结构与迁移 | `db/schema.ts`、`drizzle/` |
-| 后台鉴权与保护 | `lib/admin-session.ts`、`lib/admin-protection.ts` |
-| Worker 路由与构建 | `worker/index.ts`、`scripts/copy-static-shell.mjs` |
+| Page title and description | `app/layout.tsx` |
+| Homepage header | `addons/components/GalleryHeader.tsx` |
+| Photo grid and gallery interactions | `app/gallery.tsx` |
+| Full-size image viewer | `app/photo-lightbox.tsx` |
+| Page styling | `app/globals.css` |
+| Management interface | `app/manage/` |
+| Database schema and migrations | `db/schema.ts`, `drizzle/` |
+| Administrator authentication and protection | `lib/admin-session.ts`, `lib/admin-protection.ts` |
+| Worker routing and build packaging | `worker/index.ts`, `scripts/copy-static-shell.mjs` |
 
-新增数据结构迁移运行 `pnpm run db:generate`，保留已有迁移历史。修改前先读相关实现，不重写整个项目来解决局部问题。
+Run `pnpm run db:generate` to generate new schema migrations and preserve existing migration history. Read the relevant implementation before editing; do not rewrite the entire project to fix a localized issue.
 
-## 必须保留的边界
+## Boundaries to Preserve
 
-- 不提交 `.dev.vars`、`.env*`、密钥、照片、数据库导出、`.wrangler`、`node_modules` 或 `dist`。
-- 不删除已有数据，不覆盖主人尚未提交的修改，不关闭后台鉴权、来源校验或会话保护来解决错误。
-- 高清公开展示意味着访客能够保存展示的图片；本项目不是 DRM，也不能保证阻止盗图。
-- 主人提出的新需求与平台规则优先；本文不授权额外发布、付费、发送消息或访问其他人的资源。
+- Never commit `.dev.vars`, `.env*`, secrets, photos, database exports, `.wrangler`, `node_modules` or `dist`.
+- Do not delete existing data, overwrite the owner's uncommitted changes, or disable administrator authentication, origin checks or session protection to resolve an error.
+- Public high-resolution display allows visitors to save the displayed images. This project is not DRM and cannot guarantee protection against image theft.
+- The owner's current instructions and platform rules take precedence. This guide does not authorize additional publishing, payments, messages or access to anyone else's resources.
 
-## 许可与官方参考
+## License and Official References
 
-代码采用 [MIT 许可证](LICENSE)，允许复制、修改及自行部署，需保留许可证声明。依赖遵循各自许可证，使用者负责上传照片的版权和授权。
+Code is licensed under the [MIT License](LICENSE). Copying, modification and self-hosting are allowed with the license notice preserved. Dependencies retain their own licenses. Users are responsible for the copyright and permissions of uploaded photos.
 
-- [Cloudflare Workers 配置](https://developers.cloudflare.com/workers/wrangler/configuration/)
-- [D1 命令](https://developers.cloudflare.com/d1/wrangler-commands/)
-- [R2 命令](https://developers.cloudflare.com/r2/reference/wrangler-commands/)
-
-## English handoff for AI assistants
-
-Read this README and AGENTS.md first. Inspect the current environment, configuration and deployment state; resume at the first incomplete stage. Prepare dependencies, initialize local D1, verify the gallery, configure the owner's Cloudflare resources, apply remote migrations, configure secrets and deploy only within the owner's authorization. Guide the owner one concrete step at a time for login, account choice, password entry and photo selection. Never expose secrets, reuse the author's resources, overwrite existing data or claim unverified success. Return the actual site URL, admin URL, completed checks and any remaining actions.
+- [Cloudflare Workers Configuration](https://developers.cloudflare.com/workers/wrangler/configuration/)
+- [D1 Commands](https://developers.cloudflare.com/d1/wrangler-commands/)
+- [R2 Commands](https://developers.cloudflare.com/r2/reference/wrangler-commands/)
