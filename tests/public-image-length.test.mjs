@@ -23,8 +23,8 @@ test('a truncated original never records an apparently complete length',async()=
  const b=bucket();b.change(original.subarray(0,-2),'broken');await assert.rejects(exports.publicImageLength(b,'id','image/jpeg'),/Missing JPEG end/);assert.equal(b.values.size,0);
 });
 test('invalid length manifests are recomputed instead of declaring a wrong HTTP length',async()=>{
- const b=bucket();b.values.set('public-length/v3/id/a',JSON.stringify({length:999,mime:'image/jpeg'}));assert.equal(await exports.publicImageLength(b,'id','image/jpeg'),12);assert.equal(b.reads,1);
+ const b=bucket();b.values.set('public-length/v4/id/a',JSON.stringify({length:999,mime:'image/jpeg'}));assert.equal(await exports.publicImageLength(b,'id','image/jpeg'),12);assert.equal(b.reads,1);
 });
 test('originals and preloads bypass the previous incomplete cache generation',()=>{
- assert.equal(urls.originalViewUrl('id'),'/api/view/id?v=4');assert.equal(urls.originalViewUrl('id',2),'/api/view/id?v=4&retry=2');
+ assert.equal(urls.originalViewUrl('id'),'/api/view/id?v=6');assert.equal(urls.originalViewUrl('id',2),'/api/view/id?v=6&retry=2');
 });

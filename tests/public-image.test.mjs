@@ -56,3 +56,14 @@ test('large JPEG scans retain all escaped pixel bytes and use bounded transport 
   assert.deepEqual(await clean(tiny,'image/jpeg',size),Buffer.concat([Buffer.from([255,216]),segment(218,Buffer.from([1])),Buffer.from([2,255,0,3,255,208,4,255,209,5]),Buffer.from([255,217])]));
  }
 });
+
+test('split escaped marker does not reuse old cursor against a shorter next chunk',async()=>{
+ const isolated={};
+ const code=ts.transpileModule(readFileSync('lib/public-image.ts','utf8')+'\nexport {Input};',{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
+ vm.runInNewContext(code,{exports:isolated,Uint8Array,DataView,TextDecoder,ReadableStream,Set,Error});
+ const chunks=[[0,255,0,255],[0,1,2],[255,217]];
+ const input=new isolated.Input(new ReadableStream({start(c){for(const x of chunks)c.enqueue(new Uint8Array(x));c.close();}}));
+ const scan=input.entropy(),out=[];let marker;
+ while(true){const r=await scan.next();if(r.done){marker=r.value;break;}out.push(r.value);}
+ assert.equal(marker,217);assert.deepEqual(Buffer.concat(out),Buffer.from([0,255,0,255,0,1,2]));
+});

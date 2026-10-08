@@ -19,7 +19,7 @@ class Input {
    if(end>start)yield this.buffer.subarray(start,end);
    this.offset=end+1;
    let marker=(await this.take(1))[0];while(marker===255)marker=(await this.take(1))[0];
-   if(marker===0||(marker>=208&&marker<=215)){yield new Uint8Array([255,marker]);break;}
+   if(marker===0||(marker>=208&&marker<=215)){yield new Uint8Array([255,marker]);cursor=-1;break;}
    return marker;
   }
   if(cursor===this.buffer.length){this.offset=cursor;yield this.buffer.subarray(start);}
@@ -67,17 +67,10 @@ export async function publicImage(bucket:ImageBucket,id:string,mime:string){
  if(!iterator){await input.cancel();throw Error('Unsupported image');}
  // Validate the signature before returning a successful image response.
  let first:IteratorResult<Uint8Array>;try{first=await iterator.next();}catch(error){await input.cancel();throw error;}
- let next=first,offset=0,ended=false;
+ let next=first;
  return new ReadableStream<Uint8Array>({async pull(controller){try{
-  // Send bounded 64 KiB blocks instead of thousands of tiny JPEG fragments.
-  const output=new Uint8Array(65536);let size=0;
-  while(size<output.length&&!ended){
-   if(next.done){ended=true;break;}
-   const count=Math.min(output.length-size,next.value.length-offset);
-   output.set(next.value.subarray(offset,offset+count),size);size+=count;offset+=count;
-   if(offset===next.value.length){next=await iterator.next();offset=0;}
-  }
-  if(size)controller.enqueue(size===output.length?output:output.subarray(0,size));
-  if(ended){controller.close();await input.cancel();}
+  if(next.done){controller.close();await input.cancel();return;}
+  controller.enqueue(next.value);
+  next=await iterator.next();
  }catch(error){await input.cancel();controller.error(error);}},async cancel(){await input.cancel();}});
 }

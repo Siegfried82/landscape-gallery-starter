@@ -3,7 +3,7 @@ type Bucket=Pick<R2Bucket,'get'|'head'|'put'>;
 /** Remember the exact sanitized size so HTTP can detect an interrupted transfer. */
 export async function publicImageLength(bucket:Bucket,id:string,mime:string):Promise<number|null>{
  const source=await bucket.head(id);if(!source)return null;
- const key=`public-length/v3/${id}/${source.etag}`;
+ const key=`public-length/v4/${id}/${source.etag}`;
  const cached=await bucket.get(key);
  if(cached){
   try{
