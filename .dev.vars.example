@@ -1,0 +1,3 @@
+# Copy to ignored .dev.vars for local development only.
+ADMIN_PASSWORD="replace-with-your-own-password"
+SESSION_SECRET="replace-with-a-random-secret-at-least-32-characters"

@@ -1,0 +1,1 @@
+ALTER TABLE `photos` ADD `display_key` text DEFAULT '' NOT NULL;

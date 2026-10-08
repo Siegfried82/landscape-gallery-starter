@@ -1,0 +1,167 @@
+/* --------------------------------------------------
+ * 特性：Lightroom 通栏等高对齐画廊 (Justified Gallery)
+ * 带有 LR 同款缩略图尺寸实时平滑缩放滑块
+ * -------------------------------------------------- */
+
+.addon-justified-wrapper {
+  width: 100%;
+  margin: 20px auto 40px auto;
+}
+
+/* 顶部/底部 Lightroom 专属尺寸调节工具条 */
+.addon-justified-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 6px 0;
+}
+
+.addon-justified-slider-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.addon-justified-slider-wrap svg {
+  opacity: 0.7;
+}
+
+.addon-justified-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 110px;
+  height: 4px;
+  background: var(--line);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.addon-justified-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--ink);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.addon-justified-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* 画廊通栏容器：行高由 CSS 变量 --target-row-height 驱动 */
+.addon-justified-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+}
+
+.addon-justified-item {
+  position: relative;
+  height: var(--target-row-height, 280px);
+  flex-grow: 1;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--surface);
+  cursor: zoom-in;
+  transition: height 0.25s ease-out;
+}
+
+.addon-justified-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+  .addon-justified-item:hover .addon-justified-img {
+    transform: scale(1.03);
+  }
+}
+
+/* 悬停浮层 */
+.addon-justified-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75) 0%, transparent 60%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 14px 18px;
+  color: #fff;
+  pointer-events: none;
+}
+
+.addon-justified-item:hover .addon-justified-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+.addon-justified-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 3px 0;
+  color: #fff;
+}
+
+.addon-justified-sub {
+  font-size: 11px;
+  color: #d1d5db;
+  margin: 0;
+}
+
+/* 尾行对齐填充元素 */
+.addon-justified-container::after {
+  content: "";
+  flex-grow: 999;
+  min-width: 180px;
+  height: 0;
+}
+
+.addon-justified-container{display:block}.addon-justified-container::after{display:none}.justified-row{display:flex;gap:4px;margin-bottom:4px}.addon-justified-item{flex:none;height:auto;border:0;padding:0;border-radius:0;min-width:0;background:transparent}.addon-justified-img{object-fit:contain;transform:none!important}.addon-justified-item:focus-visible .addon-justified-overlay{opacity:1;visibility:visible}.addon-justified-slider{padding:0;min-width:110px;width:110px}.addon-justified-overlay .addon-justified-sub{overflow-wrap:anywhere}
+
+/* Keep metadata inside even the narrowest portrait thumbnail. */
+.addon-justified-overlay{padding:8px;overflow:hidden;min-width:0}
+.addon-justified-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
+.addon-justified-overlay .addon-justified-sub{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;line-height:1.35;max-height:2.7em;flex-shrink:0}
+
+/* Seamless photos use the entire viewport, while controls retain their gutters. */
+main.gallery-seamless{max-width:none;padding-left:0;padding-right:0;display:grid;grid-template-columns:minmax(0,6%) minmax(0,1fr) minmax(0,6%)}
+main.gallery-seamless>*{grid-column:2;min-width:0}
+main.gallery-seamless>.addon-justified-wrapper:not(.addon-justified-classic){grid-column:1/-1;margin-top:0}
+.addon-justified-wrapper:not(.addon-justified-classic) .justified-row{gap:0;margin-bottom:0;line-height:0}
+.addon-justified-wrapper:not(.addon-justified-classic) .addon-justified-card{flex-shrink:0;min-width:0}
+.addon-justified-wrapper:not(.addon-justified-classic) .addon-justified-item{display:block}
+/* Gallery lives inside .collection, not directly under main. */
+main.gallery-seamless>.collection{grid-column:1/-1;width:100%;min-width:0}
+main.gallery-seamless>.collection>.filters{margin-left:6%;margin-right:6%}
+main.gallery-seamless>.collection>.addon-justified-wrapper{width:100%;max-width:none;margin-left:0;margin-right:0}
+/* Card dimensions already follow the image ratio. Avoid contain's subpixel
+   letterboxing and animated heights leaving a hairline between adjacent rows. */
+.addon-justified-wrapper:not(.addon-justified-classic) .addon-justified-item{transition:none;overflow:hidden;vertical-align:top}
+.addon-justified-wrapper:not(.addon-justified-classic) .addon-justified-img{object-fit:fill;transition:none}
+.addon-justified-wrapper:not(.addon-justified-classic) .justified-row{padding:0;border:0}
+
+/* Keep each photo under one stable parent when resizing changes row membership. */
+.addon-justified-container.stable-photo-layout{display:flex;flex-wrap:wrap;align-items:flex-start;row-gap:0}
+.stable-photo-layout>.justified-break{flex:0 0 100%;height:0;padding:0;margin:0;line-height:0;pointer-events:none}
+.stable-photo-layout>.addon-justified-card{margin:0;flex-shrink:0}
+.addon-justified-classic .stable-photo-layout>.addon-justified-card{margin-bottom:24px}
+.stable-photo-layout .addon-justified-item{transition:none}

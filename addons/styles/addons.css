@@ -1,0 +1,983 @@
+/* --------------------------------------------------
+ * Gallery Addons - 精致画廊样式扩展 (CSS Styles)
+ * 兼容纯白与暗黑双主题
+ * -------------------------------------------------- */
+
+/* 顶部导航与 Header */
+.addon-header {
+  position: relative;
+  z-index: 40;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: var(--paper);
+  background: color-mix(in srgb, var(--paper) 80%, transparent);
+  border-bottom: 1px solid var(--line);
+  transition: background-color 0.3s ease;
+}
+
+.addon-header-inner {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 20px 6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.addon-brand {
+  font-family: Georgia, "Songti SC", serif;
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+}
+
+.addon-brand span {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  color: var(--muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+.addon-nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.addon-btn-pill {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 9999px !important;
+  padding: 6px 14px !important;
+  font-size: 13px !important;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.addon-btn-pill:hover {
+  border-color: var(--ink) !important;
+  transform: translateY(-1px);
+}
+
+/* 导言介绍区 */
+.addon-intro {
+  padding: 50px 0 35px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 30px;
+}
+
+.addon-eyebrow {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.addon-title {
+  font-family: Georgia, "Songti SC", serif;
+  font-size: clamp(26px, 4vw, 42px);
+  font-weight: 400;
+  letter-spacing: 1px;
+  line-height: 1.3;
+  margin: 0 0 14px 0;
+  color: var(--ink);
+}
+
+.addon-desc {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 680px;
+}
+
+/* 照片卡片与画廊效果 */
+.addon-card {
+  break-inside: avoid;
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.addon-card-photo {
+  position: relative;
+  border: 0;
+  padding: 0;
+  background: var(--surface);
+  width: 100%;
+  display: block;
+  overflow: hidden;
+  border-radius: 4px;
+  cursor: zoom-in;
+}
+
+.addon-card-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+  .addon-card-photo:hover img {
+    transform: scale(1.035);
+  }
+}
+
+/* 悬停微浮层 */
+.addon-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  text-align: left;
+  padding: 16px;
+  color: #fff;
+  pointer-events: none;
+}
+
+.addon-card-photo:focus-visible .addon-card-overlay {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .addon-card-photo:hover .addon-card-overlay {
+    opacity: 1;
+  }
+}
+
+.addon-view-action {
+  align-self: flex-end;
+  font-size: 12px;
+  letter-spacing: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.addon-overlay-exif {
+  font-size: 11px;
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* 标题与副标 */
+.addon-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding-top: 14px;
+}
+
+.addon-photo-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--ink);
+}
+
+.addon-photo-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+
+.addon-index {
+  font-family: Georgia, serif;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* EXIF 徽章 */
+.addon-exif-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin: 10px 0 0;
+  line-height: 1.5;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow-wrap: anywhere;
+}
+
+/* 视角切换控件 */
+.addon-view-switch {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 9999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.addon-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent !important;
+  color: var(--muted) !important;
+  border: 0 !important;
+  border-radius: 9999px !important;
+  padding: 6px 12px !important;
+  font-size: 12px !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addon-switch-btn:hover {
+  color: var(--ink) !important;
+}
+
+.addon-switch-btn.active {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* --------------------------------------------------
+ * 修复：解决少照片时右侧出现大块空白的排版 Bug
+ * 采用 auto-fit 自适应网格，4张照片自动居中平衡填满，杜绝右侧留白
+ * -------------------------------------------------- */
+.grid {
+  display: grid !important;
+  columns: auto !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)) !important;
+  gap: 32px !important;
+  align-items: start !important;
+}
+
+.grid > article {
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+/* 宽幅画册模式 (Cinematic Mode) 排版 */
+.grid.view-cinematic {
+  columns: 1 !important;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.grid.view-cinematic .addon-card {
+  margin-bottom: 70px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.grid.view-cinematic .addon-card-photo {
+  max-height: 94vh;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+}
+
+.grid.view-cinematic .addon-card-photo img {
+  max-height: 94vh;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.grid.view-cinematic .addon-photo-title {
+  font-size: 20px;
+}
+
+.grid.view-cinematic .addon-photo-sub {
+  font-size: 14px;
+}
+
+/* ==================================================
+ * Bug 修复项目：首页巨幕封面大图 (HeroCover)
+ * ================================================== */
+.addon-hero-cover {
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.addon-hero-media {
+  position: relative;
+  width: 100%;
+  height: clamp(380px, 62vh, 680px);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface);
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+}
+
+.addon-hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 38%;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.addon-hero-media:hover .addon-hero-img {
+  transform: scale(1.02);
+}
+
+.addon-hero-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 12, 10, 0.85) 0%,
+    rgba(10, 12, 10, 0.35) 45%,
+    transparent 80%
+  );
+  pointer-events: none;
+}
+
+.addon-hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 36px 44px;
+  color: #fff;
+  max-width: 800px;
+}
+
+.addon-hero-badge {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #d1d5db;
+  margin-bottom: 10px;
+}
+
+.addon-hero-title {
+  font-family: Georgia, "Songti SC", serif;
+  font-size: clamp(28px, 4.2vw, 48px);
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  line-height: 1.25;
+  margin: 0 0 10px 0;
+  color: #ffffff;
+}
+
+.addon-hero-meta {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0 0 20px 0;
+  letter-spacing: 0.5px;
+}
+
+.addon-hero-btn {
+  background: rgba(255, 255, 255, 0.18) !important;
+  backdrop-filter: blur(10px) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  border-radius: 9999px !important;
+  padding: 8px 18px !important;
+  font-size: 13px !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addon-hero-btn:hover {
+  background: #ffffff !important;
+  color: #111312 !important;
+}
+
+/* ==================================================
+ * 精选大图舞台 (FeaturedCarousel)
+ * 1. 左右箭头严格锁死在大图舞台内部垂直居中，绝不飘逸到导航栏
+ * 2. 居中大图 100% 完整原画呈现 (contain)
+ * 3. 悬停渐变浮现 UI 与标题
+ * ================================================== */
+.addon-loop-section {
+  position: relative !important;
+  width: 100%;
+  margin: 10px auto 45px auto;
+  overflow: hidden;
+}
+
+.addon-loop-stage {
+  position: relative !important;
+  width: 100%;
+  height: clamp(380px, 62vh, 640px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+/* 左右极简悬浮翻页箭头 - 严格限制在 stage 左右两侧内部 */
+.addon-stage-nav {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 25 !important;
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px !important;
+  background: rgba(15, 18, 15, 0.75) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px !important;
+  line-height: 1;
+  padding: 0 !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.8;
+}
+
+.addon-stage-nav.prev {
+  left: 20px !important;
+}
+
+.addon-stage-nav.next {
+  right: 20px !important;
+}
+
+.addon-stage-nav:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.95) !important;
+  transform: translateY(-50%) scale(1.08) !important;
+}
+
+.addon-stage-card {
+  position: relative;
+  width: 100%;
+  max-width: 1100px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-in;
+}
+
+.addon-stage-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 核心：100% 完整风光构图，绝不裁切 */
+.addon-stage-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* 悬停浮层 */
+.addon-stage-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 12, 10, 0.88) 0%,
+    rgba(10, 12, 10, 0.2) 40%,
+    transparent 70%
+  );
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30px 36px;
+  color: #ffffff;
+  pointer-events: none;
+}
+
+.addon-stage-card:hover .addon-stage-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+.addon-stage-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.addon-stage-counter {
+  font-family: Georgia, serif;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: #d1d5db;
+}
+
+.addon-stage-action {
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.addon-stage-bottom {
+  max-width: 720px;
+}
+
+.addon-stage-title {
+  font-family: Georgia, "Songti SC", serif;
+  font-size: clamp(22px, 3.2vw, 36px);
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  margin: 0 0 8px 0;
+  color: #ffffff;
+}
+
+.addon-stage-meta {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.addon-stage-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.addon-stage-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px !important;
+  background: var(--line) !important;
+  border: 0 !important;
+  padding: 0 !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.addon-stage-dot.active {
+  background: var(--ink) !important;
+  width: 22px;
+}
+
+/* ==================================================
+ * 批量管理与删除样式 (BatchManager)
+ * ================================================== */
+.addon-batch-wrapper {
+  margin-bottom: 20px;
+}
+
+.addon-batch-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.addon-batch-toggle-btn {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 6px !important;
+  padding: 8px 16px !important;
+  font-size: 13px !important;
+}
+
+.addon-batch-toggle-btn.active {
+  background: var(--ink) !important;
+  color: var(--paper) !important;
+  border-color: var(--ink) !important;
+}
+
+.addon-batch-btn-subtle {
+  background: transparent !important;
+  color: var(--muted) !important;
+  border: 1px solid transparent !important;
+  padding: 8px 12px !important;
+  font-size: 13px !important;
+}
+
+.addon-batch-btn-subtle:hover {
+  color: var(--ink) !important;
+}
+
+/* 底部悬浮条 */
+.addon-batch-floating-bar {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  background: #111312;
+  color: #fff;
+  border: 1px solid #333;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  backdrop-filter: blur(16px);
+  animation: addonSlideUp 0.25s ease-out;
+}
+
+@keyframes addonSlideUp {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.addon-batch-count {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.addon-batch-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.addon-batch-cancel {
+  background: transparent !important;
+  color: #aaa !important;
+  border: 1px solid #444 !important;
+  border-radius: 9999px !important;
+  padding: 6px 14px !important;
+  font-size: 12px !important;
+}
+
+.addon-batch-delete {
+  background: #bd6c5e !important;
+  color: #fff !important;
+  border: 0 !important;
+  border-radius: 9999px !important;
+  padding: 6px 16px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+.addon-batch-edit-btn {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 9999px !important;
+  padding: 6px 16px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+.addon-batch-edit-btn:hover {
+  background: #222 !important;
+  color: #fff !important;
+}
+
+.addon-batch-indicator-note {
+  background: var(--surface);
+  border: 1px dashed var(--line);
+  padding: 10px 16px;
+  border-radius: 6px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.addon-batch-indicator-note p {
+  margin: 0;
+}
+
+/* 批量修改弹窗 */
+.addon-batch-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.addon-batch-modal {
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  width: 100%;
+  max-width: 520px;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  animation: addonFadeIn 0.2s ease-out;
+}
+
+@keyframes addonFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.addon-batch-modal-head h3 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-family: Georgia, serif;
+  font-weight: 400;
+}
+
+.addon-batch-modal-head p {
+  margin: 0 0 24px 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.addon-batch-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.addon-batch-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.addon-batch-form input {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
+  padding: 10px 12px !important;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+}
+
+.addon-batch-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.addon-batch-btn-save {
+  background: var(--ink) !important;
+  color: var(--paper) !important;
+  border: 1px solid var(--ink) !important;
+  border-radius: 6px !important;
+  padding: 8px 20px !important;
+  font-size: 13px !important;
+}
+
+@media (max-width: 650px) {
+  .addon-loop-stage {
+    height: 380px;
+  }
+  .addon-loop-card {
+    width: 92vw;
+  }
+  .addon-loop-card.prev,
+  .addon-loop-card.next {
+    display: none;
+  }
+  .addon-loop-overlay {
+    padding: 20px 22px;
+  }
+  .addon-loop-nav {
+    display: none;
+  }
+  .addon-batch-floating-bar {
+    width: 90%;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 18px;
+  }
+}
+
+/* Integration with the existing site: reset native header/card styles. */
+header.addon-header{display:block;width:100%;max-width:none;margin:0;padding:0}
+.addon-header-inner{width:100%;flex-wrap:wrap}
+.addon-brand{flex-shrink:0}.addon-brand span{font-size:12px}
+.addon-nav{flex-wrap:wrap}.addon-btn-pill{font-size:14px!important}
+.addon-intro{padding:24px 0 32px;border:0;margin-bottom:0}
+.addon-title{font-family:inherit;font-size:16px;letter-spacing:0;color:var(--muted);margin:0}
+.addon-intro:has(.addon-desc) .addon-title{font-family:Georgia,"Songti SC",serif;font-size:clamp(28px,4vw,42px);color:var(--ink);margin-bottom:14px}
+.addon-desc{font-size:16px}.addon-photo-sub,.addon-index{font-size:14px}
+.addon-caption>div{min-width:0}.addon-photo-title,.addon-photo-sub{overflow-wrap:anywhere}
+.addon-exif-badge{font-size:12px;max-width:100%}.addon-exif-badge svg{flex-shrink:0}
+.addon-overlay-exif{font-size:12px;overflow-wrap:anywhere}.addon-switch-btn{font-size:14px!important}
+.grid>.addon-card{margin-bottom:32px}.grid.view-cinematic>.addon-card{margin-bottom:70px}
+@media(max-width:650px){.addon-header-inner{gap:12px}.addon-nav{gap:8px}.addon-btn-pill{padding:6px 10px!important}.grid.view-cinematic>.addon-card{margin-bottom:38px}.addon-view-switch{margin-left:auto}}
+
+.manage-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;align-items:start}
+.manage-grid>.addon-card{margin:0;min-width:0;display:block}.manage-grid .addon-exif-badge{display:none}
+.manage-grid .addon-photo-sub{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.photo-editor[data-slot=dialog-content]{max-width:780px!important;width:calc(100vw - 32px);max-height:90dvh;overflow:auto;background:var(--paper);color:var(--ink);border-color:var(--line);padding:24px}
+.photo-editor .edit{margin:0}.photo-editor img{max-width:100%;height:auto}.photo-editor h4{display:none}
+@media(max-width:1000px){.manage-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}}
+@media(max-width:650px){.manage-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.manage-grid .addon-caption{gap:6px}.manage-grid .addon-photo-title{font-size:14px}.manage-grid .addon-index{display:none}.manage-grid .addon-photo-sub{font-size:12px}.photo-editor[data-slot=dialog-content]{padding:16px}}
+/* The main site uses plain CSS, so dialog geometry must not depend on utility classes. */
+.photo-editor[data-slot=dialog-content]{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:51;display:grid;gap:14px;border:1px solid var(--line);outline:none;box-shadow:0 24px 80px #0004}
+.photo-editor>[data-slot=dialog-title]{margin:0;padding-right:48px;font-size:22px;font-weight:400}
+.photo-editor>[data-slot=dialog-description]{margin:0;font-size:14px}
+.photo-editor>[data-slot=dialog-close]{position:absolute;top:12px;right:12px;width:36px;height:36px;padding:8px;background:var(--paper);color:var(--ink);border-color:var(--line)}
+.photo-editor>[data-slot=dialog-close] svg{width:18px;height:18px}.photo-editor>[data-slot=dialog-close] .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+.addon-loop-stage{height:auto;min-height:0}.addon-stage-card{height:auto;max-width:1100px}.addon-stage-img-wrap{height:auto;width:auto;max-width:100%;background:transparent}.addon-stage-img{max-height:70vh;max-width:100%;height:auto;width:auto}.addon-stage-card:focus-visible .addon-stage-overlay{opacity:1;visibility:visible}.grid.view-cinematic{grid-template-columns:1fr!important}.addon-card-photo:hover img{transform:none}
+.batch-select-card{position:relative;cursor:pointer;border:1px solid var(--line);padding:10px;min-width:0}.batch-select-card img{display:block;width:100%;height:auto}.batch-select-card input{width:20px;height:20px}.batch-select-card span{overflow-wrap:anywhere}.addon-batch-modal{max-height:90dvh;overflow:auto}.addon-batch-actions{flex-wrap:wrap}.addon-stage-overlay{padding:20px}.addon-stage-img-wrap{border-radius:0}.addon-stage-img{max-height:none;width:100%;height:auto}.addon-stage-card{display:block}.addon-stage-img-wrap{width:100%;display:block}
+main:has(.addon-batch-wrapper .batch-selection-gallery)>.collection{display:none}
+.addon-exif-badge{display:none}
+.addon-loop-section{width:calc(100vw - 32px);margin-left:calc(50% - 50vw + 16px);margin-right:0;max-width:none}
+.addon-stage-card{max-width:none;width:100%}.addon-stage-nav{width:28px;height:36px;border-radius:4px!important;opacity:.6}.addon-stage-nav.prev{left:4px!important}.addon-stage-nav.next{right:4px!important}.addon-stage-exif{color:#fff;font-size:13px;overflow-wrap:anywhere;margin:8px 0 0}.addon-stage-overlay{padding:26px 42px}
+
+.gallery-view-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end}
+.addon-loop-stage,.hero-loading-placeholder{aspect-ratio:3/2;width:100%;position:relative}
+.hero-loading-placeholder{width:calc(100vw - 32px);margin:10px 0 45px calc(50% - 50vw + 16px);background:var(--surface)}
+.addon-loop-stage .addon-stage-card,.addon-loop-stage .addon-stage-img-wrap{height:100%;width:100%}
+.addon-loop-stage .addon-stage-img{width:100%;height:100%;object-fit:contain;background:transparent}
+.addon-stage-overlay{background:transparent;text-shadow:0 1px 4px #000,0 0 10px #0008}
+.addon-stage-bottom{align-self:stretch;width:100%;max-width:100%;display:flex;align-items:baseline;justify-content:space-between;gap:16px;background:transparent;padding:0;border-radius:0}
+.addon-stage-bottom .addon-stage-exif{margin:0}
+
+/* Smaller central work, with neighboring works angled behind its edges. */
+.addon-loop-stage,.hero-loading-placeholder{--hero-height:clamp(280px,62vh,740px);aspect-ratio:auto;height:var(--hero-height)}
+.addon-loop-stage{--card-width:min(calc((100vw - 32px) * .82),calc(var(--hero-height) * var(--hero-ratio,1.5)),1200px);perspective:900px;isolation:isolate}
+.addon-loop-stage .addon-stage-card{width:var(--card-width);height:auto;aspect-ratio:var(--hero-ratio,1.5);z-index:2;animation:gallery-center-in .35s ease-out}
+.addon-loop-stage .addon-stage-img-wrap{height:100%;aspect-ratio:var(--hero-ratio,1.5)}
+.addon-stage-neighbor{position:absolute;left:50%;top:50%;width:var(--card-width);height:auto;aspect-ratio:var(--hero-ratio,1.5);padding:0;border:0;background:transparent;border-radius:0;opacity:.85;z-index:1;box-shadow:0 18px 35px #0004;transition:opacity .2s}
+.addon-stage-neighbor.prev{transform:translate(calc(-150% - 18px),-50%) rotateY(35deg) scale(.92);transform-origin:right center}
+.addon-stage-neighbor.next{transform:translate(calc(50% + 18px),-50%) rotateY(-35deg) scale(.92);transform-origin:left center}
+.addon-stage-neighbor img{width:100%;height:100%;position:absolute;inset:0;display:block;object-fit:cover}
+.addon-stage-neighbor:hover,.addon-stage-neighbor:focus-visible{opacity:1}
+.addon-stage-nav.prev{left:calc(50% - var(--card-width)/2 - 36px)!important}.addon-stage-nav.next{right:calc(50% - var(--card-width)/2 - 36px)!important}
+@keyframes gallery-center-in{from{opacity:.65;transform:scale(.97) rotateY(5deg)}to{opacity:1;transform:none}}
+@media(max-width:650px){.addon-loop-stage,.hero-loading-placeholder{--hero-height:clamp(230px,43vh,410px)}.addon-stage-overlay{padding:12px 20px}.addon-stage-exif{font-size:11px}.addon-stage-neighbor.prev{transform:translate(calc(-150% - 10px),-50%) rotateY(35deg) scale(.92)}.addon-stage-neighbor.next{transform:translate(calc(50% + 10px),-50%) rotateY(-35deg) scale(.92)}}
+@media(prefers-reduced-motion:reduce){.addon-loop-stage .addon-stage-card{animation:none}.addon-stage-neighbor{transition:none}}
+
+/* Shape the visible side faces directly, avoiding clipped perspective corners. */
+.addon-loop-stage{--side-gap:18px}
+.addon-stage-neighbor{left:0;top:50%;width:max(0px,calc(50% - var(--card-width)/2 - var(--side-gap)));height:calc(var(--card-width)/var(--hero-ratio,1.5));aspect-ratio:auto;transform-origin:center}
+.addon-stage-neighbor.prev{transform:translateY(-50%);clip-path:polygon(0 0,100% 4%,100% 96%,0 100%)}
+.addon-stage-neighbor.next{left:auto;right:0;transform:translateY(-50%);clip-path:polygon(0 4%,100% 0,100% 100%,0 96%)}
+@media(max-width:650px){.addon-loop-stage{--side-gap:10px}}
+.addon-stage-bottom .addon-stage-meta{margin:0;flex:0 1 auto;text-align:left;min-width:0;color:#fff}
+.addon-stage-bottom .addon-stage-exif{margin:0 0 0 auto;flex:0 1 auto;min-width:0;text-align:right}
+
+/* In album view the card, caption and overlay follow the actual photo width. */
+.grid.view-cinematic .addon-card{width:min(100%,calc(94vh * var(--photo-ratio,1.5)));margin-left:auto;margin-right:auto}
+.grid.view-cinematic .addon-card-photo{width:fit-content!important;max-width:100%;margin-inline:auto;display:block}
+.grid.view-cinematic .addon-overlay-exif{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;max-height:4.5em;line-height:1.5}
+
+/* Classic cards share the justified row sizing and preserve metadata below. */
+.addon-justified-card{flex:none;min-width:0}
+.addon-justified-classic .justified-row{align-items:flex-start;margin-bottom:24px}
+.addon-justified-classic .addon-caption{padding:12px 12px 0;gap:12px}
+.addon-justified-classic .addon-photo-title,.addon-justified-classic .addon-photo-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.addon-justified-classic .addon-index{flex-shrink:0}
+.addon-classic-exif{font-size:12px;line-height:1.65;color:var(--muted);margin:10px 0 0;padding:0 12px;min-width:0;overflow-wrap:anywhere}
+.addon-classic-equipment{display:block;margin-bottom:3px}
+.addon-classic-settings{display:flex;flex-wrap:wrap;gap:3px 12px}
+.addon-classic-settings>span{max-width:100%}
+@media(max-width:650px){.addon-view-switch{flex-wrap:wrap}}
+
+/* Bound caption height so a narrow portrait cannot push the next row down. */
+.addon-justified-classic .addon-classic-exif{line-height:1.5;overflow:hidden}
+.addon-justified-classic .addon-classic-equipment{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.addon-justified-classic .addon-classic-settings{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.addon-justified-classic .addon-classic-settings>span+span::before{content:" · ";white-space:pre}
+/* Position the ordinal immediately below the centre of each photograph. */
+.addon-justified-classic .addon-caption{display:flex;flex-direction:column-reverse;align-items:center;text-align:center;gap:6px}
+.addon-justified-classic .addon-caption>div{max-width:100%}
+.addon-justified-classic .addon-index{align-self:center;display:block}
+
+.curated-divider{border:0;border-top:1px solid var(--line);margin:28px 0}.sort-hint{font-size:13px}.addon-justified-card[draggable=true]{cursor:grab}
+
+/* Crossfade inside fixed photo bounds; never stack whole carousel scenes. */
+.addon-loop-stage .hero-scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;--card-width:min(calc((100vw - 32px) * .82),calc(var(--hero-height) * var(--hero-ratio,1.5)),1200px)}
+.addon-loop-stage .hero-scene .addon-stage-card{animation:none;height:calc(var(--card-width) / var(--hero-ratio,1.5));transition:width 440ms cubic-bezier(.22,1,.36,1),height 440ms cubic-bezier(.22,1,.36,1)}
+.hero-photo-layer{position:absolute;inset:0;z-index:1}
+.addon-loop-stage .hero-photo-layer>.addon-stage-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.addon-loop-stage .hero-photo-out{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;z-index:2;animation:hero-fade-out 440ms cubic-bezier(.22,1,.36,1) both}
+.hero-photo-in{opacity:1}
+.hero-scene .addon-stage-overlay{z-index:3}
+.hero-scene.transitioning .addon-stage-overlay{visibility:hidden;opacity:0}
+.hero-side-in{opacity:1}
+.hero-side-out{pointer-events:none;animation:hero-fade-out 440ms ease both}
+.hero-scene .addon-stage-neighbor{overflow:hidden;transition:width 440ms cubic-bezier(.22,1,.36,1),height 440ms cubic-bezier(.22,1,.36,1),opacity 180ms ease}
+@keyframes hero-fade-in{from{opacity:0}to{opacity:1}}
+@keyframes hero-fade-out{from{opacity:1}to{opacity:0}}
+@media(prefers-reduced-motion:reduce){.hero-photo-in,.hero-photo-out,.hero-side-in,.hero-side-out{animation:none}.addon-loop-stage .hero-scene .addon-stage-card,.hero-scene .addon-stage-neighbor{transition:none}}
+
+
+/* One glass treatment for controls; photographs and quiet arrows stay bare. */
+:root{--glass-bg:linear-gradient(145deg,#ffffffd9,#f0f3f1b8);--glass-hover:linear-gradient(145deg,#fffffff2,#e9efecd9);--glass-border:#c4cec9b3;--glass-highlight:#fffffff2;--glass-shadow:0 3px 12px #23352a0b;--glass-active:linear-gradient(145deg,#fffffffa,#d5e4dddc);--glass-text:var(--ink)}
+:root[data-gallery-theme=dark],.photo-lightbox{--glass-bg:linear-gradient(145deg,#434d47a6,#202822c2);--glass-hover:linear-gradient(145deg,#56645bb8,#303b33d9);--glass-border:#b3c9bc52;--glass-highlight:#ffffff38;--glass-shadow:0 4px 16px #0003;--glass-active:linear-gradient(145deg,#617769cc,#3b5244d9);--glass-text:#f1f4ef}
+:is(button,.button,select):not(.photo,.addon-card-photo,.addon-justified-item,.addon-stage-neighbor,.addon-stage-nav,.viewer-prev,.viewer-next){background:var(--glass-bg)!important;color:var(--glass-text)!important;border:1px solid var(--glass-border)!important;border-radius:999px!important;box-shadow:inset 0 1px 0 var(--glass-highlight),var(--glass-shadow)!important;-webkit-backdrop-filter:blur(12px) saturate(135%);backdrop-filter:blur(12px) saturate(135%);transition:background-color 160ms ease,border-color 160ms ease,box-shadow 160ms ease,transform 160ms ease!important}
+:is(button,.button):not(.photo,.addon-card-photo,.addon-justified-item,.addon-stage-neighbor,.addon-stage-nav,.viewer-prev,.viewer-next):hover:not(:disabled){background:var(--glass-hover)!important;border-color:color-mix(in srgb,var(--focus) 55%,transparent)!important;box-shadow:inset 0 1px 0 var(--glass-highlight),0 5px 16px #23352a14!important}
+:is(button,.button):not(.photo,.addon-card-photo,.addon-justified-item,.addon-stage-neighbor,.addon-stage-nav,.viewer-prev,.viewer-next):active:not(:disabled){transform:scale(.97)}
+:is(button[aria-pressed=true],button[aria-checked=true],.addon-switch-btn.active,.addon-batch-toggle-btn.active){background:var(--glass-active)!important;border-color:var(--focus)!important;font-weight:600}
+.addon-view-switch,.addon-justified-slider-wrap{background:var(--glass-bg)!important;border:1px solid var(--glass-border)!important;box-shadow:inset 0 1px 0 var(--glass-highlight),var(--glass-shadow);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.addon-view-switch .addon-switch-btn{-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none!important;border-color:transparent!important;background:transparent!important}
+.addon-view-switch .addon-switch-btn.active{background:var(--glass-active)!important;border-color:var(--glass-border)!important;box-shadow:inset 0 1px 0 var(--glass-highlight),var(--glass-shadow)!important}
+button.delete,button.addon-batch-delete{background:linear-gradient(145deg,#fde5dfd9,#e7b6abc7)!important;color:#7b2418!important;border-color:#c071607a!important}
+:root[data-gallery-theme=dark] button.delete,:root[data-gallery-theme=dark] button.addon-batch-delete{background:linear-gradient(145deg,#984c40ab,#65382ec4)!important;color:#ffe5dd!important}
+input[type=file]::file-selector-button{border:1px solid var(--glass-border);border-radius:999px;background:var(--glass-bg);color:var(--glass-text);padding:7px 13px;margin-right:12px;cursor:pointer;box-shadow:inset 0 1px 0 var(--glass-highlight)}
+.addon-stage-nav,.photo-lightbox .viewer-prev,.photo-lightbox .viewer-next{background:transparent!important;border:0!important;box-shadow:none!important;-webkit-backdrop-filter:none;backdrop-filter:none;opacity:.18;text-shadow:0 1px 5px #0009;transition:opacity 180ms ease!important}
+.addon-stage-nav:hover,.addon-stage-nav:focus-visible{opacity:1;background:transparent!important}
+@media(hover:none){.addon-stage-nav{opacity:.55}}
+@supports not (backdrop-filter:blur(1px)){:root{--glass-bg:linear-gradient(145deg,#fff,#edf1ee)}:root[data-gallery-theme=dark],.photo-lightbox{--glass-bg:linear-gradient(145deg,#414b44,#202822)}}
+@media(prefers-reduced-motion:reduce){.hero-scene.entering,.hero-scene.leaving{animation:none}.hero-scene.leaving{display:none}:is(button,.button,select){transition:none!important}:is(button,.button):active:not(:disabled){transform:none}}
+
+button.delete:hover:not(:disabled),button.addon-batch-delete:hover:not(:disabled){background:linear-gradient(145deg,#ffe9e3f2,#e4a798df)!important;border-color:#b36a59!important}
+:root[data-gallery-theme=dark] button.delete:hover:not(:disabled),:root[data-gallery-theme=dark] button.addon-batch-delete:hover:not(:disabled){background:linear-gradient(145deg,#a85b4ec7,#794334e6)!important}
+.addon-loop-stage .hero-quality{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity 180ms ease;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.addon-loop-stage .hero-quality{transition:none}}
+
+/* Size control uses the same glass tokens as the neighboring mode selector. */
+.addon-justified-slider-wrap{min-width:200px;padding:9px 16px 12px!important;gap:9px!important;border-radius:999px!important;background:var(--glass-bg)!important;border:1px solid var(--glass-border)!important;box-shadow:inset 0 1px 0 var(--glass-highlight),var(--glass-shadow)!important;-webkit-backdrop-filter:blur(12px) saturate(135%);backdrop-filter:blur(12px) saturate(135%)}
+.addon-justified-slider-wrap>span{color:var(--glass-text);font-size:12px;line-height:1.4}
+.addon-justified-slider-wrap .addon-justified-slider{width:148px;min-width:148px;height:6px;border:0;padding:0;margin:1px 0;background:linear-gradient(90deg,var(--focus) 0%,var(--focus) var(--slider-fill,37.5%),var(--line) var(--slider-fill,37.5%),var(--line) 100%);border-radius:999px;touch-action:pan-y}
+.addon-justified-slider-wrap .addon-justified-slider::-webkit-slider-thumb{width:19px;height:19px;border:1px solid var(--glass-border);background:var(--glass-active);box-shadow:inset 0 1px 0 var(--glass-highlight),var(--glass-shadow);transition:none}
+.addon-justified-slider-wrap .addon-justified-slider::-webkit-slider-thumb:hover{transform:none}
+.addon-justified-slider-wrap .addon-justified-slider::-moz-range-thumb{width:17px;height:17px;border-radius:50%;border:1px solid var(--glass-border);background:var(--glass-active);box-shadow:inset 0 1px 0 var(--glass-highlight),var(--glass-shadow)}
+.addon-justified-classic .addon-justified-item{transition:none}
