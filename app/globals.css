@@ -117,3 +117,7 @@
 
 /* Keep the original's loading state visible and its retry control usable. */
 .photo-lightbox .viewer-stage>.original-loading{display:flex;align-items:center;gap:10px;white-space:normal;pointer-events:auto!important}
+
+.original-loading-spinner{display:inline-block;flex-shrink:0;width:16px;height:16px;border:2px solid #ffffff55;border-top-color:#fff;border-radius:50%;animation:original-loading-spin .8s linear infinite}
+@keyframes original-loading-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.original-loading-spinner{animation:none}}

@@ -26,5 +26,5 @@ test('invalid length manifests are recomputed instead of declaring a wrong HTTP 
  const b=bucket();b.values.set('public-length/v3/id/a',JSON.stringify({length:999,mime:'image/jpeg'}));assert.equal(await exports.publicImageLength(b,'id','image/jpeg'),12);assert.equal(b.reads,1);
 });
 test('originals and preloads bypass the previous incomplete cache generation',()=>{
- assert.equal(urls.originalViewUrl('id'),'/api/view/id?v=3');assert.equal(urls.originalViewUrl('id',2),'/api/view/id?v=3&retry=2');
+ assert.equal(urls.originalViewUrl('id'),'/api/view/id?v=4');assert.equal(urls.originalViewUrl('id',2),'/api/view/id?v=4&retry=2');
 });
