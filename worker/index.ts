@@ -1,6 +1,8 @@
 import handler from 'vinext/server/fetch-handler';
 /** Keep storage APIs out of the React server rendering pipeline. */
 const routes = {
+ '/api/visits': () => import('../app/api/visits/route'),
+ '/api/admin/visitors': () => import('../app/api/admin/visitors/route'),
  '/api/order': () => import('../app/api/order/route'),
  '/api/photos': () => import('../app/api/photos/route'),
  '/api/photos/:id': () => import('../app/api/photos/[id]/route'),

@@ -9,6 +9,7 @@ export async function protectAdminRequest(request:Request){
  const original=path.startsWith('/api/admin/original/');
  if(!write&&!original)return null;
  if(write&&(!sameOrigin(request)||request.headers.get('sec-fetch-site')==='cross-site'))return new Response('Forbidden',{status:403});
+ if(path==='/api/visits'&&request.method==='POST')return null;
  if(path==='/api/admin/login'&&request.method==='POST')return null;
  if(!await getOwner(request))return new Response('Forbidden',{status:403});
  return null;
@@ -17,7 +18,7 @@ export async function protectAdminRequest(request:Request){
 /** Record completed mutations without storing cookies, passwords or query strings. */
 export async function recordAdminAction(request:Request,response:Response){
  const path=new URL(request.url).pathname;
- if(!path.startsWith('/api/')||!writeMethods.has(request.method)||!response.ok)return;
+ if(path==='/api/visits'||!path.startsWith('/api/')||!writeMethods.has(request.method)||!response.ok)return;
  if(path==='/api/admin/login'&&response.headers.get('set-cookie')?.includes('Max-Age=0'))return;
  // Upload chunks can number in the thousands; record start/completion instead.
  if(request.method==='PUT'&&path.startsWith('/api/uploads/'))return;

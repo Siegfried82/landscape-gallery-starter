@@ -64,6 +64,13 @@
       "when": 1791445000001,
       "tag": "0008_admin_audit_events",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1791582860410,
+      "tag": "0009_visitors",
+      "breakpoints": true
     }
   ]
 }

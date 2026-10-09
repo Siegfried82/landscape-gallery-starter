@@ -16,6 +16,8 @@ import {useLanguage} from '@/addons/hooks/useLanguage';
 import {usePreference} from '@/addons/hooks/usePreference';
 import {formatBilingualText} from '@/addons/locales/metadata-helpers';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
+import VisitorTracker from './VisitorTracker';
+import VisitorStats from './manage/VisitorStats';
 import PhotoLightbox from './photo-lightbox';
 async function previewBlob(file:Blob,hero=false){const bitmap=await createImageBitmap(file);try{const scale=hero?Math.min(1,Math.sqrt(12_000_000/(bitmap.width*bitmap.height))):Math.min(1,1600/Math.max(bitmap.width,bitmap.height));const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.floor(bitmap.width*scale));canvas.height=Math.max(1,Math.floor(bitmap.height*scale));const ctx=canvas.getContext('2d');if(!ctx)throw Error('无法处理图片');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);return await new Promise<Blob>((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('无法处理图片')),'image/jpeg',.76));}finally{bitmap.close();}}
 const MAX_UPLOAD_BYTES=40*1024*1024;
@@ -125,7 +127,7 @@ export default function Gallery({manage}:{manage:boolean}){
    try{const r=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids})});if(!r.ok)throw Error('排序保存失败，请刷新后重试。');await load(false);setNotice('照片顺序已保存。');}catch(e){setError((e as Error).message);}finally{setBusy(false);}
   }
   async function remove(p:Photo){if(!confirm('删除《'+p.title+'》？此操作无法撤销。'))return;setBusy(true);setError('');try{const r=await fetch('/api/photos/'+p.id,{method:'DELETE'});if(!r.ok)throw Error('删除失败，请重试。');await load();setEditing(null);setNotice('照片已删除。');}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
-  return <><GalleryHeader manage={manage} dark={dark} onToggleTheme={theme}/><main onPointerOver={e=>warmIntendedOriginal(e.target)} onFocusCapture={e=>warmIntendedOriginal(e.target)} onPointerLeave={()=>clearTimeout(originalIntentTimer.current)} className={viewMode==='grid'?'gallery-seamless':undefined}>{manage&&<GalleryIntro manage/>}
+  return <>{!manage&&<VisitorTracker/>}<GalleryHeader manage={manage} dark={dark} onToggleTheme={theme}/><main onPointerOver={e=>warmIntendedOriginal(e.target)} onFocusCapture={e=>warmIntendedOriginal(e.target)} onPointerLeave={()=>clearTimeout(originalIntentTimer.current)} className={viewMode==='grid'?'gallery-seamless':undefined}>{manage&&<><GalleryIntro manage/><VisitorStats/></>}
 
   {manage&&<form className="upload" onSubmit={upload}><div><h2>上传作品</h2><p>JPG、PNG 或 WebP，可一次选择多张照片</p></div><label>选择照片<input type="file" name="file" accept="image/jpeg,image/png,image/webp" multiple required disabled={busy} onChange={choose}/></label><label>作品标题<input name="title" placeholder={files.length>1?"留空不显示；填写则作为标题前缀":"留空不显示名称"} maxLength={100} disabled={busy}/></label><label>拍摄地点<input name="location" placeholder="例如：坦桑尼亚" maxLength={100} disabled={busy}/></label><MetadataFields busy={busy||reading}/>{files.length>1&&<p className="parameter-notice">地点应用于本批照片；EXIF 分别从每张原图读取，下方 EXIF 输入仅用于单张上传。</p>}{(reading||parameterNotice)&&<p className="parameter-notice" role="status">{reading?'正在读取拍摄参数…':parameterNotice}</p>}<button disabled={busy||reading}>{busy?'正在处理…':files.length>1?'上传 '+files.length+' 张照片':'上传照片'}</button></form>}
   {uploadProgress&&<p className="message" role="status">{uploadProgress}</p>}

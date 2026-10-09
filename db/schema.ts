@@ -1,2 +1,4 @@
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 export const photos = sqliteTable('photos', {id:text('id').primaryKey(), owner:text('owner').notNull(), title:text('title').notNull(), location:text('location').notNull(), mime:text('mime').notNull(), position:integer('position').notNull(), created:integer('created').notNull(), displayKey:text('display_key').notNull().default(''), curated:integer('curated').notNull().default(0), featured:integer('featured').notNull().default(0), featuredPosition:integer('featured_position').notNull().default(0), category:text('category').notNull().default('landscape'), series:text('series').notNull().default(''), exif:text('exif').notNull().default('{}')});
+
+export const visitors = sqliteTable('visitors', {id:integer('id').primaryKey(),browserKey:text('browser_key').notNull().unique(),visits:integer('visits').notNull().default(1),firstSeen:integer('first_seen').notNull(),lastSeen:integer('last_seen').notNull()});
